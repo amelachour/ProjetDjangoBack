@@ -1,10 +1,33 @@
-<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+<nav
+  class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white"
+  id="sidenav-main"
+>
   <div class="scrollbar-inner">
     <!-- Brand -->
-    <div class="sidenav-header  align-items-center">
-      <a class="navbar-brand" href="/">
-        <img src="/static/assets/img/brand/blue.png" class="navbar-brand-img" alt="Argon Design - Jinja Template Logo.">
+    <div class="sidenav-header align-items-center">
+      <a
+        class="navbar-brand"
+        href="/"
+        style="
+          font-family: Arial, sans-serif;
+          font-size: 18px;
+          font-weight: 600;
+          color: #693cb3;
+          text-transform: capitalize;
+          letter-spacing: 1px;
+        "
+      >
+        DevHive Academy
       </a>
+
+      <!-- <a class="navbar-brand" href="/">
+        <img
+          src="/static/images/logo.png"
+          class="navbar-brand-img"
+          alt="Argon Design - Jinja Template Logo."
+          style="width: 150px; height: auto"
+        />
+      </a> -->
     </div>
     <div class="navbar-inner">
       <!-- Collapse -->
@@ -14,57 +37,81 @@
           <h6 class="navbar-heading text-muted">Dashboard</h6>
 
           <li class="nav-item">
-            <a class="nav-link {% if 'index' in segment %} active {% endif %}" href="/">
+            <a
+              class="nav-link {% if 'index' in segment %} active {% endif %}"
+              href="/"
+            >
               <i class="ni ni-tv-2 text-primary"></i>
               <span class="nav-link-text">Dashboard</span>
             </a>
+            {% if user.is_superuser %}
+            <a
+              class="nav-link {% if 'index' in segment %} active {% endif %}"
+              href="{% url 'user_list' %}"
+            >
+              <i class="ni ni-single-02 text-primary"></i>
+              <span class="nav-link-text">Users</span>
+            </a>
+            {% endif %}
           </li>
           <h6 class="navbar-heading text-muted">Components</h6>
 
           <li class="nav-item">
-            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="#">
+            <a
+              class="nav-link {% if 'map' in segment %} active {% endif %}"
+              href="#"
+            >
               <i class="ni ni-books text-primary"></i>
-              <span class="nav-link-text">Cours</span>
+              <span class="nav-link-text"> Courses</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="#">
+            <a
+              class="nav-link {% if 'map' in segment %} active {% endif %}"
+              href="#"
+            >
               <i class="ni ni-check-bold text-primary"></i>
               <span class="nav-link-text">Quiz</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="#">
+            <a
+              class="nav-link {% if 'map' in segment %} active {% endif %}"
+              href="#"
+            >
               <i class="ni ni-book-bookmark text-primary"></i>
               <span class="nav-link-text">Révision</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="#">
+            <a
+              class="nav-link {% if 'map' in segment %} active {% endif %}"
+              href="#"
+            >
               <i class="ni ni-send text-primary"></i>
               <span class="nav-link-text">Recommandations de contenu</span>
             </a>
           </li>
-         
-         
+
           <h6 class="navbar-heading text-muted">Utilisateur</h6>
           <li class="nav-item">
-            <a class="nav-link {% if 'profile' in segment %} active {% endif %}" href="/profile.html">
+            <a
+              class="nav-link {% if 'profile' in segment %} active {% endif %}"
+              href="/profile.html"
+            >
               <i class="ni ni-single-02 text-yellow"></i>
               <span class="nav-link-text">Profile</span>
             </a>
           </li>
-          
 
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">
               <i class="ni ni-user-run text-red"></i>
               <span class="nav-link-text">Logout</span>
             </a>
-          </li>            
+          </li>
         </ul>
-       
       </div>
     </div>
   </div>

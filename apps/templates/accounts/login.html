@@ -1,80 +1,171 @@
-{% extends 'layouts/base-fullscreen.html' %}
-
-{% block title %} Login {% endblock title %}
-
-<!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
-
-{% block content %}
-
-    <!-- Page content -->
-    <div class="container mt--8 pb-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-7">
-          <div class="card bg-secondary shadow border-0">
-            <div class="card-header bg-transparent pb-5">
-              <div class="text-muted text-center mt-2 mb-3">
-                Sign IN
-              </div>
-            </div>
-            <div class="card-body px-lg-5 py-lg-5">
-              <div class="text-center text-muted mb-4">
-
-                {% if msg %}
-                  <p>{{ msg }}</p>
-                {% else %}
-                  <p>
-                    Add your credentials
-                  </p>
-                {% endif %}  
-
-              </div>
-
-              <form method="POST">
-
-                {% csrf_token %}
-
-                <div class="form-group mb-3">
-                  <div class="input-group input-group-alternative">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
-                    </div>
-                    {{ form.username }}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="input-group input-group-alternative">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                    </div>
-                    {{ form.password }}
-                  </div>
-                </div>
-                <div class="custom-control custom-control-alternative custom-checkbox">
-                  <input class="custom-control-input" id=" customCheckLogin" type="checkbox">
-                  <label class="custom-control-label" for=" customCheckLogin">
-                    <span class="text-muted">Remember me</span>
-                  </label>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary my-4">Sign in</button>
-                </div>
-              </form>
-            </div>
+{% extends 'layouts/base-fullscreen.html' %} {% block title %}Login{% endblock%}
+{% block stylesheets %}{% endblock %} {% block content %}
+<div class="container mt--8 pb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="card bg-secondary shadow border-0">
+        <div class="card-header bg-transparent pb-5">
+          <div class="text-muted text-center mt-2 mb-3">Sign IN</div>
+        </div>
+        <div class="card-body px-lg-5 py-lg-5">
+          <div class="text-center text-muted mb-4">
+            {% if msg %}
+            <p>{{ msg }}</p>
+            {% else %}
+            <p>Choose a login method</p>
+            {% endif %}
           </div>
-          <div class="row mt-3">
-            <div class="col-6">
-              <a href="{% url 'register' %}" class="text-light"><small>Register</small></a>
-            </div>
-            <div class="col-6 text-right">
-              <a href="https://appseed.us/support" class="text-light"><small>Get Support</small></a>
+
+          <!-- Username/Password Login -->
+          <div id="manual-login">
+            <h5>Login with Credentials</h5>
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group mb-3">
+                <div class="input-group input-group-alternative">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="ni ni-hat-3"></i>
+                    </span>
+                  </div>
+                  {{ form.username }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group input-group-alternative">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="ni ni-lock-circle-open"></i>
+                    </span>
+                  </div>
+                  {{ form.password }}
+                </div>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary my-4">
+                  Sign in
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Facial Recognition Login -->
+          <div id="face-login" style="margin-top: 20px">
+            <h5>Login with Facial Recognition</h5>
+            <div class="form-group mb-3">
+              <video id="video" width="320" height="240" autoplay></video>
+              <p id="status"></p>
+              <button id="start-recognition" class="btn btn-primary my-4">
+                Start Recognition
+              </button>
             </div>
           </div>
         </div>
       </div>
+      <div class="row mt-3">
+        <div class="col-6">
+          <a href="{% url 'register' %}" class="text-light"
+            ><small>Register</small></a
+          >
+        </div>
+        <div class="col-6 text-right">
+          <a href="https://appseed.us/support" class="text-light"
+            ><small>Get Support</small></a
+          >
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
-{% endblock content %}
+{% endblock content %} {% block javascripts %}
+<!-- Load the face-api.js library from the CDN -->
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
 
-<!-- Specific JS goes HERE --> 
-{% block javascripts %}{% endblock javascripts %}
+<script>
+  // Load face detection models from CDN or local path
+  async function loadModels() {
+    try {
+      await Promise.all([
+        // Load the models from the CDN if they're not available locally
+        faceapi.nets.tinyFaceDetector.loadFromUri(
+          "https://cdn.jsdelivr.net/npm/face-api.js/models"
+        ),
+        faceapi.nets.faceLandmark68Net.loadFromUri(
+          "https://cdn.jsdelivr.net/npm/face-api.js/models"
+        ),
+        faceapi.nets.faceRecognitionNet.loadFromUri(
+          "https://cdn.jsdelivr.net/npm/face-api.js/models"
+        ),
+      ]);
+      startVideo();
+    } catch (error) {
+      console.error("Error loading face-api models: ", error);
+      document.getElementById("status").innerText = "Error loading models.";
+    }
+  }
+
+  // Start video stream from the user's camera
+  function startVideo() {
+    const video = document.getElementById("video");
+    navigator.mediaDevices
+      .getUserMedia({ video: {} })
+      .then((stream) => {
+        video.srcObject = stream;
+      })
+      .catch((err) => {
+        console.error("Error accessing the camera: ", err);
+        document.getElementById("status").innerText =
+          "Error accessing the camera.";
+      });
+  }
+
+  // Start facial recognition when the button is clicked
+  document
+    .getElementById("start-recognition")
+    .addEventListener("click", async function () {
+      const video = document.getElementById("video");
+
+      // Detect a face in the video stream
+      const detection = await faceapi
+        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+        .withFaceLandmarks()
+        .withFaceDescriptor();
+
+      if (!detection) {
+        document.getElementById("status").innerText =
+          "Face not detected. Please try again.";
+        return;
+      }
+
+      // Send the face descriptor to the backend for recognition
+      const faceDescriptor = detection.descriptor;
+      fetch("/facial-recognition-login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}", // Ensure your CSRF token is correctly passed
+        },
+        body: JSON.stringify({ descriptor: Array.from(faceDescriptor) }), // Convert descriptor to array
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            document.getElementById("status").innerText =
+              "Welcome, " + data.username;
+            window.location.href = "/dashboard/"; // Redirect to dashboard
+          } else {
+            document.getElementById("status").innerText =
+              "Face not recognized.";
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          document.getElementById("status").innerText = "An error occurred.";
+        });
+    });
+
+  // Load models when the page is fully loaded
+  window.onload = loadModels;
+</script>
+{% endblock javascripts %}

@@ -29,7 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.home'  # Enable the inner home (home)
+    'apps.home',  # Enable the inner home (home)
+     'apps.authentication', 
+     'users',
+   
+    
 ]
 
 MIDDLEWARE = [
@@ -45,9 +49,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 LOGIN_REDIRECT_URL = "home"  # Route defined in home/urls.py
-LOGOUT_REDIRECT_URL = "home"  # Route defined in home/urls.py
+LOGOUT_REDIRECT_URL = "login"  # Route defined in home/urls.py
 TEMPLATE_DIR = os.path.join(CORE_DIR, "apps/templates")  # ROOT dir for templates
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -75,6 +80,7 @@ DATABASES = {
         'NAME': 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -106,6 +112,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 #############################################################
 # SRC: https://devcenter.heroku.com/articles/django-assets

@@ -25,71 +25,94 @@
                 {% if msg %}
                   <small>{{ msg | safe }}</small>
                 {% else %}
-                  Add your credentials
+           Fill this Form Please
                 {% endif %}  
               
               </div>
 
               {% if not success %}
 
-                <form method="POST">
-
-                  {% csrf_token %}
-            
-                  <div class="form-group">
+              <form method="POST" enctype="multipart/form-data">  <!-- N'oublie pas d'ajouter enctype -->
+                {% csrf_token %}
+                <div class="form-group text-center justify-content-center">
+              
+                  <div class="input-group input-group-alternative mb-3 justify-content-center">
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="role" id="roleTeacher" value="teacher" required>
+                          <label class="form-check-label" for="roleTeacher">Teacher</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="role" id="roleStudent" value="student" required>
+                          <label class="form-check-label" for="roleStudent">Student</label>
+                      </div>
+                  </div>
+              </div>
+              <span class="text-error">{{ form.role.errors }}</span>
+              
+                <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
-                      </div>
-                      {{ form.username }}
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
+                        </div>
+                        {{ form.username }}
                     </div>
-                  </div>
-                  <span class="text-error">{{ form.username.errors }}</span>
+                </div>
+                <span class="text-error">{{ form.username.errors }}</span>
 
-                  <div class="form-group">
+                <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                      </div>
-                      {{ form.email }}
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                        </div>
+                        {{ form.email }}
                     </div>
-                  </div>
-                  <span class="text-error">{{ form.email.errors }}</span>
+                </div>
+                <span class="text-error">{{ form.email.errors }}</span>
 
-                  <div class="form-group">
-                    <div class="input-group input-group-alternative">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                      </div>
-                      {{ form.password1 }}
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                        </div>
+                        {{ form.password1 }}
                     </div>
-                  </div>
-                  <span class="text-error">{{ form.password1.errors }}</span>
+                </div>
+                <span class="text-error">{{ form.password1.errors }}</span>
 
-                  <div class="form-group">
-                    <div class="input-group input-group-alternative">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                      </div>
-                      {{ form.password2 }}
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                        </div>
+                        {{ form.password2 }}
                     </div>
-                  </div>
-                  <span class="text-error">{{ form.password2.errors }}</span>
+                </div>
+                <span class="text-error">{{ form.password2.errors }}</span>
 
-                  <div class="row my-4">
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-image"></i></span>
+                        </div>
+                        <input type="file" name="face_image" accept="image/*" required>
+                    </div>
+                </div>
+                <span class="text-error">{{ form.face_image.errors }}</span>
+
+                <div class="row my-4">
                     <div class="col-12">
-                      <div class="custom-control custom-control-alternative custom-checkbox">
-                        <input class="custom-control-input" id="customCheckRegister" type="checkbox">
-                        <label class="custom-control-label" for="customCheckRegister">
-                          <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
-                        </label>
-                      </div>
+                        <div class="custom-control custom-control-alternative custom-checkbox">
+                            <input class="custom-control-input" id="customCheckRegister" type="checkbox">
+                            <label class="custom-control-label" for="customCheckRegister">
+                                <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
+                            </label>
+                        </div>
                     </div>
-                  </div>
-                  <div class="text-center">
+                </div>
+                <div class="text-center">
                     <button type="submit" class="btn btn-primary mt-4">Create account</button>
-                  </div>
-                </form>
+                </div>
+            </form>
 
               {% endif %}  
   
