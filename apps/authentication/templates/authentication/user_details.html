@@ -1,0 +1,30 @@
+{% extends 'layouts/base.html' %} {% block title %}Détails de l'utilisateur{%
+endblock title %} {% block content %}
+<div class="container mt-5">
+  <h1 class="text-center">Détails de l'utilisateur</h1>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>{{ user_profile.user.username }}</h3>
+    </div>
+    <div class="card-body">
+      <p><strong>Email: </strong>{{ user_profile.user.email }}</p>
+      <p><strong>Role: </strong>{{ user_profile.role }}</p>
+      <p><strong>Joined: </strong>{{ user_profile.user.date_joined }}</p>
+
+      {% if user_profile.face_image %}
+      <p><strong>Photo:</strong></p>
+      <img
+        src="{{ user_profile.face_image.url }}"
+        alt="Photo de {{ user_profile.user.username }}"
+        style="width: 150px; height: 150px; border-radius: 50%"
+      />
+      {% endif %}
+    </div>
+  </div>
+
+  <a href="{% url 'users_list' %}" class="btn btn-primary mt-3"
+    >Retour à la liste</a
+  >
+</div>
+{% endblock content %}

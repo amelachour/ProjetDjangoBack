@@ -1,0 +1,146 @@
+{% extends 'layouts/base.html' %} {% load static %} {% block title %} Edit User
+Profile for {{ user.username }} {% endblock title %} {% block content %}
+<!-- Inclure l'en-tête -->
+
+<!-- Inclure la navigation -->
+
+<div class="container-fluid mt-4">
+  <h2>Edit Profile for {{ user.username }}</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h6 class="heading-small text-muted mb-4">User information</h6>
+    <div class="pl-lg-4">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label class="form-control-label" for="input-username"
+              >Username</label
+            >
+            <input
+              type="text"
+              id="input-username"
+              class="form-control"
+              name="username"
+              value="{{ user.username }}"
+            />
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label class="form-control-label" for="input-email"
+              >Email address</label
+            >
+            <input
+              type="email"
+              id="input-email"
+              class="form-control"
+              name="email"
+              value="{{ user.email }}"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label class="form-control-label" for="input-first-name"
+              >First name</label
+            >
+            <input
+              type="text"
+              id="input-first-name"
+              class="form-control"
+              name="first_name"
+              value="{{ user.first_name }}"
+            />
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label class="form-control-label" for="input-last-name"
+              >Last name</label
+            >
+            <input
+              type="text"
+              name="last_name"
+              id="input-last-name"
+              class="form-control"
+              value="{{ user.last_name }}"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="my-4" />
+    <!-- Address -->
+    <h6 class="heading-small text-muted mb-4">Contact information</h6>
+    <div class="pl-lg-4">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label" for="input-address"
+              >Address</label
+            >
+            <input
+              id="input-address"
+              class="form-control"
+              name="address"
+              value="{{ user.userprofile.address }}"
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label" for="input-address"
+              >Phone number</label
+            >
+            <input
+              id="input-phone"
+              class="form-control"
+              name="phone"
+              value="{{ user.userprofile.phone }}"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="my-4" />
+    <!-- Description -->
+
+    <h6 class="heading-small text-muted mb-4">About me</h6>
+    <div class="pl-lg-4">
+      <div class="form-group">
+        <label class="form-control-label">About Me</label>
+        <textarea
+          rows="4"
+          class="form-control"
+          name="about_me"
+          value="{{ user.userprofile.about_me }}"
+        ></textarea>
+      </div>
+    </div>
+    <h6 class="heading-small text-muted mb-4">Profile Pic</h6>
+    <div class="form-group">
+      <div class="input-group input-group-alternative mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="ni ni-image"></i></span>
+        </div>
+        <input
+          type="file"
+          name="face_image"
+          value="{{user.userprofile.face_image.url}}"
+          accept="image/*"
+          required
+        />
+      </div>
+    </div>
+    <span class="text-error">{{ form.face_image.errors }}</span>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+<!-- Inclure le pied de page -->
+{% include 'includes/footer.html' %} {% endblock content %}
