@@ -32,23 +32,12 @@
 
               {% if not success %}
 
-              <form method="POST" enctype="multipart/form-data">  <!-- N'oublie pas d'ajouter enctype -->
+              <form method="POST" enctype="multipart/form-data">  
                 {% csrf_token %}
-                <div class="form-group text-center justify-content-center">
-              
-                  <div class="input-group input-group-alternative mb-3 justify-content-center">
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="role" id="roleTeacher" value="teacher" required>
-                          <label class="form-check-label" for="roleTeacher">Teacher</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="role" id="roleStudent" value="student" required>
-                          <label class="form-check-label" for="roleStudent">Student</label>
-                      </div>
-                  </div>
-              </div>
-              <span class="text-error">{{ form.role.errors }}</span>
-              
+                <input type="hidden" name="role" value="teacher">
+                <span class="text-error">{{ form.role.errors }}</span>
+                
+                <!-- Username -->
                 <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
                         <div class="input-group-prepend">
@@ -58,7 +47,8 @@
                     </div>
                 </div>
                 <span class="text-error">{{ form.username.errors }}</span>
-
+            
+                <!-- Email -->
                 <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
                         <div class="input-group-prepend">
@@ -68,7 +58,52 @@
                     </div>
                 </div>
                 <span class="text-error">{{ form.email.errors }}</span>
-
+            
+                <!-- First Name -->
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-user-run"></i></span>
+                        </div>
+                        {{ form.first_name }}
+                    </div>
+                </div>
+                <span class="text-error">{{ form.first_name.errors }}</span>
+            
+                <!-- Last Name -->
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-user-run"></i></span>
+                        </div>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                <span class="text-error">{{ form.last_name.errors }}</span>
+            
+                <!-- Phone -->
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-mobile-button"></i></span>
+                        </div>
+                        {{ form.phone }}
+                    </div>
+                </div>
+                <span class="text-error">{{ form.phone.errors }}</span>
+            
+                <!-- Address -->
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-map-big"></i></span>
+                        </div>
+                        {{ form.address }}
+                    </div>
+                </div>
+                <span class="text-error">{{ form.address.errors }}</span>
+            
+                <!-- Password -->
                 <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
                         <div class="input-group-prepend">
@@ -78,7 +113,7 @@
                     </div>
                 </div>
                 <span class="text-error">{{ form.password1.errors }}</span>
-
+            
                 <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
                         <div class="input-group-prepend">
@@ -88,7 +123,8 @@
                     </div>
                 </div>
                 <span class="text-error">{{ form.password2.errors }}</span>
-
+            
+                <!-- Profile Image -->
                 <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
                         <div class="input-group-prepend">
@@ -98,21 +134,42 @@
                     </div>
                 </div>
                 <span class="text-error">{{ form.face_image.errors }}</span>
-
+            
+                <!-- Teacher of What -->
+                <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-book-bookmark"></i></span>
+                        </div>
+                        <input type="text" name="teaching_subject" class="form-control" placeholder="Subject You Teach" required>
+                    </div>
+                </div>
+                <span class="text-error">{{ form.teaching_subject.errors }}</span>
+            
+                <!-- About Me -->
+                <div class="form-group">
+                    <label class="form-control-label">About Me</label>
+                    <textarea name="about_me" rows="4" class="form-control" placeholder="A few words about you ..."></textarea>
+                </div>
+                <span class="text-error">{{ form.about_me.errors }}</span>
+            
                 <div class="row my-4">
                     <div class="col-12">
                         <div class="custom-control custom-control-alternative custom-checkbox">
-                            <input class="custom-control-input" id="customCheckRegister" type="checkbox">
+                            <input class="custom-control-input" id="customCheckRegister" type="checkbox" required>
                             <label class="custom-control-label" for="customCheckRegister">
                                 <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
                             </label>
                         </div>
                     </div>
                 </div>
+            
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary mt-4">Create account</button>
                 </div>
             </form>
+            
+            
 
               {% endif %}  
   

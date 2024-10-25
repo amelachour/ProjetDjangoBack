@@ -3,9 +3,6 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 # views.py
-
-
-
 # -*- encoding: utf-8 -*-
 """
 Copyright (c) 2019 - present AppSeed.us
@@ -29,12 +26,37 @@ from .models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
-from .models import UserProfile
+
 import face_recognition
 import numpy as np
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import get_user_model
+from .forms import UserProfile  # Assurez-vous d'avoir un formulaire pour cela
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.contrib.auth import get_user_model
+
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from apps.authentication.models import UserProfile
+
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from apps.authentication.models import UserProfile
+from django.db.models import Q
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import get_user_model
+from .models import UserProfile
+from .forms import UserProfileForm
+from django.contrib.auth.decorators import login_required
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -56,42 +78,9 @@ def login_view(request):
 
     return render(request, "accounts/login.html", {"form": form, "msg": msg})
 
-@csrf_exempt
-def facial_recognition_login(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        descriptor = np.array(data.get("descriptor"))
 
-        # Compare with known faces
-        known_faces = load_known_faces()
 
-        for username, known_descriptor in known_faces.items():
-            results = face_recognition.compare_faces([known_descriptor], descriptor)
 
-            if results[0]:  # Face recognized
-                user = authenticate(username=username)  # Authenticate user based on username
-                if user:
-                    login(request, user)  # Log in the user
-                    return JsonResponse({"success": True, "username": username})
-
-        return JsonResponse({"success": False, "message": "Face not recognized"})
-    return JsonResponse({"error": "Invalid request"}, status=400)
-
-def load_known_faces():
-    known_faces = {}
-    users = UserProfile.objects.all()
-
-    for user_profile in users:
-        face_image_path = user_profile.face_image.path
-        known_image = face_recognition.load_image_file(face_image_path)
-        known_face_encoding = face_recognition.face_encodings(known_image)[0]
-        known_faces[user_profile.user.username] = known_face_encoding
-
-    return known_faces
-
-from django.shortcuts import render
-from django.contrib.auth import get_user_model
-from .models import UserProfile
 
 def register_user(request):
     msg = None
@@ -102,7 +91,8 @@ def register_user(request):
         if form.is_valid():
             user = form.save()
             # Save face image and role in user profile
-            UserProfile.objects.create(user=user, face_image=form.cleaned_data.get('face_image'), role='student')  # Set role to "student"
+            UserProfile.objects.create(user=user, face_image=form.cleaned_data.get('face_image'), role='student',teaching_subject=form.cleaned_data.get('teaching_subject'),
+                                    about_me=form.cleaned_data.get('about_me') ) # Save user profile # Set role to "student"
             msg = 'User created - please <a href="/login">log in</a>.'
             success = True
         else:
@@ -114,14 +104,6 @@ def register_user(request):
 
 
 
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from apps.authentication.models import UserProfile
-
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from apps.authentication.models import UserProfile
-from django.db.models import Q
 
 def user_list(request):
     # Get all users and their corresponding profiles
@@ -148,25 +130,8 @@ def user_list(request):
 
 
 
-# authentication/views.py
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import get_user_model
-from .forms import UserProfile  # Assurez-vous d'avoir un formulaire pour cela
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import get_user_model
-from django.contrib import messages
-
-
-
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import get_user_model
-from .models import UserProfile
-from .forms import UserProfileForm
-
+@login_required
 def edit_user(request, pk):
     User = get_user_model()
     user = get_object_or_404(User, pk=pk)  # Récupère l'utilisateur par son identifiant
@@ -188,6 +153,32 @@ def edit_user(request, pk):
     return render(request, 'authentication/edit_user.html', {'form': form, 'user': user})
 
 
+
+@login_required
+def edit_profile(request, pk):
+    user = request.user
+
+    # Get the user profile or return a 404 if not found
+    user_profile = get_object_or_404(UserProfile, user=user)
+
+    if request.method == 'POST':
+        # Create a form instance with the data from the request
+        form = UserProfileForm(request.POST, instance=user_profile)
+        
+        if form.is_valid():
+            # Save the form to update the user profile
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('profile')  # Redirect to the profile page
+    else:
+        # Prepopulate the form with existing data
+        form = UserProfileForm(instance=user_profile)
+
+    return render(request, 'authentication/edit_profile.html', {
+        'form': form,
+        'user': user,
+    })
+@login_required
 def delete_user(request, pk):
     User = get_user_model()  # Récupère le modèle utilisateur personnalisé
     user = get_object_or_404(User, pk=pk)  # Récupère l'utilisateur par son identifiant
@@ -198,3 +189,33 @@ def delete_user(request, pk):
         return redirect('user_list')  # Redirige vers la liste des utilisateurs
 
     return render(request, 'authentication/delete_user.html', {'user': user})
+
+
+
+# def profile_view(request):
+#     user = get_object_or_404(UserProfile, user=request.user)
+
+#     context = {
+#         'user': user,
+#     }
+#     return render(request, 'profile.html', context)
+@login_required
+def user_profile_view(request):
+    # Retrieve the user profile associated with the logged-in user
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+
+    context = {
+        'user': request.user,  # The logged-in User object
+        'user_profile': user_profile,  # The UserProfile object
+    }
+    return render(request, 'home/profile.html', context)  # Adjust the template path as needed
+
+
+def get_user_stats(request):
+    total_students = UserProfile.objects.filter(role='student').count()  # Count the number of students
+    total_teachers = UserProfile.objects.filter(role='teacher').count()  # Count the number of teachers
+    return JsonResponse({'total_students': total_students, 'total_teachers': total_teachers})
+
+def user_details_view(request, user_id):
+    user_profile = get_object_or_404(UserProfile, id=user_id)
+    return render(request, 'authentication/user_details.html', {'user_profile': user_profile})    
