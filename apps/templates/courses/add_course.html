@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Ajouter un Nouveau Cours {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Ajouter un Nouveau Cours</h1>
+    <form method="POST" enctype="multipart/form-data" class="form-horizontal">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_title">Titre :</label>
+            {{ form.title }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_description">Description :</label>
+            {{ form.description }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_file">Fichier :</label>
+            {{ form.file }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Ajouter le Cours</button>
+    </form>
+
+    <br>
+    <a class="btn btn-secondary" href="{% url 'listcourses' %}">Voir les Cours</a>
+</div>
+
+{% include "includes/footer.html" %}
+{% endblock content %}
+
+{% block javascripts %}
+<!-- Ajouter ici les scripts spécifiques si nécessaire -->
+{% endblock javascripts %}

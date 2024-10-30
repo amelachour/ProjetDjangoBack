@@ -1,0 +1,3 @@
+installer sur backend et le frontend : php artisan storage:link
+ajouter ça dans le .env du frontend : BACKEND_URL=http://localhost:8081
+Runner le backend sur le port 8081

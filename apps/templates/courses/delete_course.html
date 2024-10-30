@@ -1,0 +1,17 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Supprimer le Cours {% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Supprimer le Cours : {{ course.title }}</h1>
+    <p>Êtes-vous sûr de vouloir supprimer ce cours ?</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <a class="btn btn-secondary" href="{% url 'listcourses' %}">Annuler</a>
+    </form>
+</div>
+{% include "includes/footer.html" %}
+{% endblock content %}

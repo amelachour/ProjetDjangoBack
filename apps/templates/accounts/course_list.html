@@ -1,0 +1,28 @@
+{% extends 'layouts/base-fullscreen.html' %}
+
+{% block title %} Liste De Cours {% endblock title %}
+
+{% block content %}
+<ul>
+    {% for course in courses %}
+        <li>
+            <strong>{{ course.title }}</strong> - {{ course.date_posted }}<br>
+            {{ course.description }}<br>
+            <a href="{{ course.file.url }}">Télécharger</a>
+        </li>
+    {% empty %}
+        <li>Aucun cours disponible.</li>
+    {% endfor %}
+</ul>
+
+    <br>
+    <a href="{% url 'add_course' %}">Ajouter un autre cours</a>
+
+
+    {% include "includes/footer.html" %}
+
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

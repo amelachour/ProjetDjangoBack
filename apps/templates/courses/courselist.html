@@ -1,0 +1,63 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Liste De Cours {% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Liste De Cours</h1>
+    
+    <ul class="list-group mb-4">
+        {% for course in page_obj %}
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div>
+                    <strong>{{ course.title }}</strong> - <em>{{ course.date_posted|date:"d M Y" }}</em>
+                    <p class="mb-1">{{ course.description }}</p>
+                    <a class="btn btn-primary btn-sm" href="{{ course.file.url }}" role="button">Télécharger</a>
+                </div>
+                <div>
+                    <a class="btn btn-warning btn-sm" href="{% url 'update_course' course.pk %}" title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{% url 'delete_course' course.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-center">Aucun cours disponible.</li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination justify-content-center mb-4">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-secondary" href="?page=1">&laquo; Première</a>
+                <a class="btn btn-outline-secondary" href="?page={{ page_obj.previous_page_number }}">Précédente</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-secondary" href="?page={{ page_obj.next_page_number }}">Suivante</a>
+                <a class="btn btn-outline-secondary" href="?page={{ page_obj.paginator.num_pages }}">Dernière &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    
+    <div class="text-center">
+        <a class="btn btn-success" href="{% url 'add_course' %}">Ajouter un autre cours</a>
+    </div>
+</div>
+
+{% include "includes/footer.html" %}
+
+{% endblock content %}
+
+{% block javascripts %}
+<!-- Ajouter ici les scripts spécifiques si nécessaire -->
+{% endblock javascripts %}
