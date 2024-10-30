@@ -11,15 +11,26 @@ def course_list(request):
     logger.info("Début du traitement de la requête course_list")
     try:
         courses = Cours.objects.all()
-        paginator = Paginator(courses, 4)  
+        paginator = Paginator(courses, 3)  
         page_number = request.GET.get('page')  
         page_obj = paginator.get_page(page_number)
         
-        logger.info(f"Nombre de cours récupérés : {courses.count()}")
-        return render(request, "courses/courselist.html", {"page_obj": page_obj})
+        # Calculate statistics
+        total_courses = courses.count()
+
+        # Fetch the latest course
+        latest_course = courses.order_by('-date_posted').first() if courses.exists() else None
+
+        logger.info(f"Nombre de cours récupérés : {total_courses}")
+        return render(request, "courses/courselist.html", {
+            "page_obj": page_obj,
+            "total_courses": total_courses,
+            "latest_course": latest_course,  # Pass the latest course to the template
+        })
     except Exception as e:
         logger.error(f"Erreur capturée dans course_list: {str(e)}")
         return HttpResponse(f"Une erreur est survenue : {str(e)}")
+
 
 def add_course(request):
     if request.method == 'POST':

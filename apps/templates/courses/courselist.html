@@ -5,32 +5,65 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="text-center">Liste De Cours</h1>
-    
-    <ul class="list-group mb-4">
-        {% for course in page_obj %}
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-                <div>
-                    <strong>{{ course.title }}</strong> - <em>{{ course.date_posted|date:"d M Y" }}</em>
-                    <p class="mb-1">{{ course.description }}</p>
-                    <a class="btn btn-primary btn-sm" href="{{ course.file.url }}" role="button">Télécharger</a>
-                </div>
-                <div>
-                    <a class="btn btn-warning btn-sm" href="{% url 'update_course' course.pk %}" title="Modifier">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <form action="{% url 'delete_course' course.pk %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
-                </div>
-            </li>
-        {% empty %}
-            <li class="list-group-item text-center">Aucun cours disponible.</li>
-        {% endfor %}
-    </ul>
 
+    <!-- Course Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Cours</h5>
+                    <p class="card-text">{{ total_courses }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Dernier Cours Ajouté</h5>
+                    {% if latest_course %}
+                        <p class="card-text">
+                            {{ latest_course.title }} - <em>{{ latest_course.date_posted|date:"d M Y" }}</em>
+                        </p>
+                    {% else %}
+                        <p class="card-text">Aucun cours n'a été ajouté récemment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="row">
+        {% for course in page_obj %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ course.date_posted|date:"d M Y" }}</h6>
+                        <p class="card-text">{{ course.description|truncatewords:15 }}</p>
+                        <a class="btn btn-primary" href="{{ course.file.url }}" role="button">Télécharger</a>
+                        <div class="mt-2">
+                            <a class="btn btn-warning btn-sm" href="{% url 'update_course' course.pk %}" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{% url 'delete_course' course.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">Aucun cours disponible.</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
     <div class="pagination justify-content-center mb-4">
         <span class="step-links">
             {% if page_obj.has_previous %}
@@ -53,6 +86,7 @@
         <a class="btn btn-success" href="{% url 'add_course' %}">Ajouter un autre cours</a>
     </div>
 </div>
+
 
 {% include "includes/footer.html" %}
 
