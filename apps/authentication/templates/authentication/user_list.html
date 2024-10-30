@@ -41,29 +41,62 @@
     </thead>
     <tbody>
       {% for user in users %}
-      <tr>
+      <tr style="{% if not user.is_active %}filter: blur(2px);{% endif %}">
         <td>{{ user.id }}</td>
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ user.userprofile.role }}</td>  <!-- Use user.userprofile to access role -->
+        <td>{{ user.userprofile.role }}</td>
         <td>
-          {% if user.userprofile.face_image %}
-          <img src="{{ user.userprofile.face_image.url }}" alt="Photo de {{ user.username }}" style="width: 80px; height: 80px; border-radius: 50%">
-          {% else %}
-          <img src="{% static 'images/default_image.png' %}" alt="Photo de {{ user.username }}" style="width: 80px; height: 80px; border-radius: 50%">
-          {% endif %}
+            {% if user.userprofile.face_image %}
+                <img src="{{ user.userprofile.face_image.url }}" alt="Photo de {{ user.username }}" style="width: 80px; height: 80px; border-radius: 50%;">
+            {% else %}
+                <img src="{% static 'images/default_image.png' %}" alt="Photo de {{ user.username }}" style="width: 80px; height: 80px; border-radius: 50%;">
+            {% endif %}
         </td>
+        
 
         <td>
-          <a href="{% url 'user_details' user.id %}" class="btn btn-info" title="Détails">
+          <a href="{% url 'user_details' user.id %}" class="btn btn-info" title="Details">
             <i class="fas fa-eye"></i>
           </a>
-          <a href="{% url 'edit_user' user.id %}" class="btn btn-warning" title="Modifier">
+          
+          <!-- <a href="{% url 'edit_user' user.id %}" class="btn btn-warning" title="Modifier">
             <i class="fas fa-edit"></i>
-          </a>
-          <button class="btn btn-danger" title="Supprimer" data-toggle="modal" data-target="#deleteModal{{ user.id }}">
+          </a> -->
+          <!-- <button class="btn btn-danger" title="Supprimer" data-toggle="modal" data-target="#deleteModal{{ user.id }}">
             <i class="fas fa-trash"></i>
+          </button> -->
+        
+        <!-- Deactivate Button -->
+
+  <button class="btn btn-warning" title="Désactiver" data-toggle="modal" data-target="#deactivateModal{{ user.id }}">
+    <i class="fas fa-user-slash"></i>
+  </button>
+
+  <!-- Modal de confirmation de désactivation -->
+  <div class="modal fade" id="deactivateModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="deactivateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deactivateModalLabel">Confirmer la désactivation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
           </button>
+        </div>
+        <div class="modal-body">
+          Êtes-vous sûr de vouloir désactiver cet utilisateur?
+        </div>
+        <div class="modal-footer">
+          <form method="POST" action="{% url 'deactivate_user' user.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning">Oui, désactiver</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</td>
 
           <!-- Modal de confirmation -->
           <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

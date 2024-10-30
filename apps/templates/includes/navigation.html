@@ -1,3 +1,4 @@
+{% load static %}
 <nav
   class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom"
 >
@@ -299,15 +300,18 @@
           >
             <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle">
-                <img
-                  src="{{ user.userprofile.face_image.url }}"
-                  alt="Photo de {{ user.username }}"
-                  style="width: 100px; height: 50px; border-radius: 60%"
-                />
-              </span>
+                {% if current_user.userprofile.face_image %}
+                    <img src="{{ current_user.userprofile.face_image.url }}" alt="Photo de {{ current_user.username }}" style="width: 100px; height: auto; border-radius: 50%;" />
+                {% else %}
+                    <img src="{% static 'default-profile.png' %}" alt="minette" style="width: 25px; height: auto; border-radius: 50%;" />
+                {% endif %}
+            </span>
+            
               <div class="media-body ml-2 d-none d-lg-block">
                 <span class="mb-0 text-sm font-weight-bold">
-                  {{ request.user.username }}
+                  <div class="user-info">
+                    <span>{{ current_user.username }}</span>
+                    
                 </span>
               </div>
             </div>
@@ -320,14 +324,7 @@
               <i class="ni ni-single-02"></i>
               <span>My profile</span>
             </a>
-            <a
-              target="_blank"
-              href="http://appseed.us/support"
-              class="dropdown-item"
-            >
-              <i class="ni ni-support-16"></i>
-              <span>Support</span>
-            </a>
+
             <div class="dropdown-divider"></div>
 
             <form action="{% url 'logout' %}" method="POST">
